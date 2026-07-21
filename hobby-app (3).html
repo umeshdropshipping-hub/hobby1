@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hobby — Shop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#4F3DF5;
+    --primary-dark:#372ACB;
+    --primary-light:#ECEAFF;
+    --accent:#FF5C7A;
+    --accent2:#FFB648;
+    --bg:#F5F5FA;
+    --surface:#FFFFFF;
+    --text:#17162B;
+    --text-muted:#6E6C85;
+    --success:#21B573;
+    --border:#E7E6F0;
+    --radius:16px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:#DAD9E8; font-family:'Inter',sans-serif; color:var(--text); display:flex; justify-content:center; align-items:flex-start; min-height:100vh; padding:24px 12px;}
+  h1,h2,h3,.display{font-family:'Space Grotesk',sans-serif;}
+
+  /* ---- Phone frame ---- */
+  .phone{
+    width:390px; max-width:100%; height:844px; max-height:96vh;
+    background:var(--bg); border-radius:44px; overflow:hidden; position:relative;
+    box-shadow:0 30px 60px -20px rgba(30,20,80,.45), 0 0 0 10px #111022, 0 0 0 12px #2c2a4a;
+    display:flex; flex-direction:column;
+  }
+  .statusbar{
+    height:46px; flex:0 0 auto; display:flex; align-items:center; justify-content:space-between;
+    padding:0 26px; font-size:13px; font-weight:600; color:var(--text); background:var(--bg);
+  }
+  .notch{position:absolute; top:0; left:50%; transform:translateX(-50%); width:120px; height:26px; background:#111022; border-radius:0 0 18px 18px; z-index:50;}
+
+  .screen{flex:1 1 auto; overflow-y:auto; overflow-x:hidden; position:relative; scrollbar-width:none;}
+  .screen::-webkit-scrollbar{display:none;}
+
+  /* ---- Topbar ---- */
+  .topbar{display:flex; align-items:center; gap:12px; padding:6px 20px 14px; background:var(--bg); position:sticky; top:0; z-index:20;}
+  .topbar h1{font-size:22px; font-weight:700;}
+  .iconbtn{width:38px; height:38px; border-radius:12px; background:var(--surface); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; cursor:pointer; flex:0 0 auto; transition:transform .15s;}
+  .iconbtn:active{transform:scale(.9);}
+  .iconbtn svg{width:18px; height:18px;}
+  .grow{flex:1;}
+
+  /* ---- Bottom nav ---- */
+  .bottomnav{
+    flex:0 0 auto; display:flex; justify-content:space-around; align-items:center;
+    padding:10px 14px calc(14px + env(safe-area-inset-bottom,0px));
+    background:var(--surface); border-top:1px solid var(--border); position:relative; z-index:30;
+  }
+  .navitem{display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer; color:var(--text-muted); font-size:10.5px; font-weight:600; padding:6px 10px; border-radius:14px; transition:all .2s; position:relative;}
+  .navitem svg{width:22px; height:22px; transition:all .2s;}
+  .navitem.active{color:var(--primary); background:var(--primary-light);}
+  .navitem .badge{position:absolute; top:0px; right:6px; background:var(--accent); color:#fff; font-size:9px; font-weight:700; min-width:15px; height:15px; border-radius:8px; display:flex; align-items:center; justify-content:center; padding:0 3px;}
+
+  /* ---- Buttons ---- */
+  .btn{border:none; border-radius:14px; font-family:'Inter',sans-serif; font-weight:700; font-size:14.5px; cursor:pointer; transition:transform .12s, opacity .12s;}
+  .btn:active{transform:scale(.97);}
+  .btn-primary{background:var(--primary); color:#fff; padding:15px; width:100%;}
+  .btn-primary:disabled{opacity:.5;}
+  .btn-outline{background:var(--surface); color:var(--primary); border:1.5px solid var(--primary); padding:13px; width:100%;}
+  .btn-dark{background:var(--text); color:#fff; padding:15px; width:100%;}
+  .btn-ghost{background:transparent; color:var(--text-muted); font-weight:600; padding:10px;}
+
+  /* ---- Banner ---- */
+  .banner-wrap{padding:4px 20px 8px;}
+  .banner{
+    border-radius:20px; padding:22px; min-height:130px; display:flex; flex-direction:column; justify-content:center;
+    background:linear-gradient(135deg,var(--primary) 0%, #7B5CFF 100%); color:#fff; position:relative; overflow:hidden;
+  }
+  .banner .tag{font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; opacity:.85;}
+  .banner h2{font-size:24px; line-height:1.15; margin:6px 0 10px; max-width:70%;}
+  .banner .blob{position:absolute; right:-20px; top:-20px; width:120px; height:120px; background:rgba(255,255,255,.14); border-radius:50%;}
+  .banner .blob2{position:absolute; right:30px; bottom:-40px; width:90px; height:90px; background:rgba(255,255,255,.12); border-radius:50%;}
+  .banner .cta{align-self:flex-start; background:#fff; color:var(--primary); font-weight:700; font-size:12.5px; padding:9px 16px; border-radius:10px; z-index:2;}
+
+  /* ---- Section header ---- */
+  .section{padding:18px 20px 4px;}
+  .section-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;}
+  .section-head h3{font-size:16.5px; font-weight:700;}
+  .section-head .link{font-size:12.5px; font-weight:700; color:var(--primary); cursor:pointer;}
+
+  /* ---- Categories row ---- */
+  .cat-row{display:flex; gap:14px; overflow-x:auto; padding:2px 20px 6px; scrollbar-width:none;}
+  .cat-row::-webkit-scrollbar{display:none;}
+  .cat-chip{flex:0 0 auto; display:flex; flex-direction:column; align-items:center; gap:7px; cursor:pointer; width:64px;}
+  .cat-chip .ring{width:58px; height:58px; border-radius:50%; background:var(--surface); display:flex; align-items:center; justify-content:center; font-size:24px; box-shadow:0 2px 0 var(--border); border:2px solid transparent; transition:border-color .2s;}
+  .cat-chip:hover .ring{border-color:var(--primary);}
+  .cat-chip span{font-size:11px; font-weight:600; text-align:center; color:var(--text-muted);}
+
+  /* ---- Product grid ---- */
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:14px; padding:6px 20px 20px;}
+  .card{background:var(--surface); border-radius:var(--radius); overflow:hidden; cursor:pointer; border:1px solid var(--border); position:relative; transition:transform .15s;}
+  .card:active{transform:scale(.97);}
+  .card .imgwrap{position:relative; width:100%; aspect-ratio:1/1; background:#eee; overflow:hidden;}
+  .card img{width:100%; height:100%; object-fit:cover; display:block;}
+  .sticker{position:absolute; top:8px; left:-6px; background:var(--accent); color:#fff; font-size:10px; font-weight:700; padding:3px 10px; transform:rotate(-8deg); border-radius:3px; box-shadow:1px 2px 3px rgba(0,0,0,.15); z-index:2;}
+  .sticker.new{background:var(--success);}
+  .wishbtn{position:absolute; top:8px; right:8px; width:30px; height:30px; border-radius:50%; background:rgba(255,255,255,.9); display:flex; align-items:center; justify-content:center; z-index:2; cursor:pointer;}
+  .wishbtn svg{width:15px; height:15px;}
+  .card .info{padding:10px 12px 12px;}
+  .card .cat{font-size:10px; color:var(--text-muted); font-weight:600; text-transform:uppercase; letter-spacing:.04em;}
+  .card .name{font-size:13.5px; font-weight:700; margin:3px 0 5px; line-height:1.25; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; min-height:34px;}
+  .price-row{display:flex; align-items:baseline; gap:6px;}
+  .price{font-weight:800; font-size:14.5px;}
+  .mrp{font-size:11px; color:var(--text-muted); text-decoration:line-through;}
+  .rating{display:flex; align-items:center; gap:3px; font-size:11px; color:var(--text-muted); margin-top:3px;}
+  .rating svg{width:11px; height:11px; fill:var(--accent2);}
+
+  /* ---- Search ---- */
+  .searchbar{display:flex; align-items:center; gap:10px; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:11px 14px; margin:6px 20px 4px;}
+  .searchbar input{border:none; outline:none; flex:1; font-family:'Inter'; font-size:14px; background:transparent; color:var(--text);}
+  .searchbar svg{width:17px; height:17px; color:var(--text-muted); flex:0 0 auto;}
+
+  /* ---- Product Detail ---- */
+  .pd-imgwrap{width:100%; aspect-ratio:1/1; background:#eee; position:relative;}
+  .pd-imgwrap img{width:100%; height:100%; object-fit:cover;}
+  .pd-body{padding:20px; padding-bottom:110px;}
+  .pd-cat{font-size:11px; font-weight:700; color:var(--primary); text-transform:uppercase; letter-spacing:.06em;}
+  .pd-title{font-size:21px; font-weight:700; margin:6px 0 8px; line-height:1.25;}
+  .pd-price-row{display:flex; align-items:baseline; gap:10px; margin-bottom:14px;}
+  .pd-price{font-size:24px; font-weight:800;}
+  .pd-off{background:#FFE7EA; color:var(--accent); font-size:11.5px; font-weight:700; padding:3px 8px; border-radius:6px;}
+  .optlabel{font-size:12.5px; font-weight:700; color:var(--text-muted); margin:16px 0 8px; text-transform:uppercase; letter-spacing:.04em;}
+  .opt-row{display:flex; gap:10px; flex-wrap:wrap;}
+  .opt{padding:9px 16px; border-radius:10px; border:1.5px solid var(--border); font-size:13px; font-weight:600; cursor:pointer; background:var(--surface);}
+  .opt.sel{border-color:var(--primary); background:var(--primary-light); color:var(--primary);}
+  .swatch{width:32px; height:32px; border-radius:50%; cursor:pointer; border:2px solid var(--border); position:relative;}
+  .swatch.sel::after{content:""; position:absolute; inset:-4px; border:2px solid var(--primary); border-radius:50%;}
+  .qty-row{display:flex; align-items:center; gap:16px; margin-top:16px;}
+  .qty-ctrl{display:flex; align-items:center; gap:0; border:1.5px solid var(--border); border-radius:12px; overflow:hidden;}
+  .qty-ctrl button{width:36px; height:36px; border:none; background:var(--surface); font-size:17px; font-weight:700; cursor:pointer; color:var(--primary);}
+  .qty-ctrl .qn{width:36px; text-align:center; font-weight:700;}
+  .desc{font-size:13.5px; line-height:1.6; color:var(--text-muted); margin-top:16px;}
+  .pd-fixedbar{position:absolute; bottom:0; left:0; right:0; background:var(--surface); border-top:1px solid var(--border); padding:14px 20px calc(14px + env(safe-area-inset-bottom,0px)); display:flex; gap:10px; z-index:15;}
+
+  /* ---- Cart ---- */
+  .cart-item{display:flex; gap:12px; padding:14px 20px; border-bottom:1px solid var(--border);}
+  .cart-item img{width:74px; height:74px; border-radius:12px; object-fit:cover; background:#eee; flex:0 0 auto;}
+  .ci-info{flex:1; min-width:0;}
+  .ci-info .name{font-size:13.5px; font-weight:700; margin-bottom:2px; display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; overflow:hidden;}
+  .ci-info .meta{font-size:11.5px; color:var(--text-muted); margin-bottom:6px;}
+  .ci-bottom{display:flex; align-items:center; justify-content:space-between;}
+  .ci-price{font-weight:800; font-size:14px;}
+  .remove{color:var(--accent); font-size:11.5px; font-weight:700; cursor:pointer;}
+  .summary{padding:16px 20px; background:var(--surface); margin:12px 20px; border-radius:16px; border:1px solid var(--border);}
+  .srow{display:flex; justify-content:space-between; font-size:13.5px; color:var(--text-muted); margin-bottom:10px;}
+  .srow.total{color:var(--text); font-weight:800; font-size:16px; padding-top:10px; border-top:1px dashed var(--border); margin-top:2px;}
+  .checkout-bar{position:absolute; bottom:0; left:0; right:0; background:var(--surface); border-top:1px solid var(--border); padding:14px 20px calc(14px + env(safe-area-inset-bottom,0px)); z-index:15;}
+
+  /* ---- Forms ---- */
+  .field{margin-bottom:14px;}
+  .field label{font-size:12.5px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:6px;}
+  .field input, .field textarea, .field select{
+    width:100%; border:1.5px solid var(--border); border-radius:12px; padding:13px 14px; font-family:'Inter'; font-size:14px; outline:none; background:var(--surface); color:var(--text);
+  }
+  .field input:focus, .field textarea:focus{border-color:var(--primary);}
+  .field-row{display:flex; gap:10px;}
+  .field-row .field{flex:1;}
+
+  /* ---- Empty state ---- */
+  .empty{display:flex; flex-direction:column; align-items:center; text-align:center; padding:60px 30px; color:var(--text-muted);}
+  .empty .emoji{font-size:52px; margin-bottom:14px;}
+  .empty h3{color:var(--text); margin-bottom:6px; font-size:17px;}
+  .empty p{font-size:13px; line-height:1.5; margin-bottom:20px;}
+
+  /* ---- Profile ---- */
+  .profile-head{display:flex; align-items:center; gap:14px; padding:20px; background:linear-gradient(135deg,var(--primary),#7B5CFF); color:#fff; margin:0 0 8px;}
+  .avatar{width:58px; height:58px; border-radius:50%; background:rgba(255,255,255,.25); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:22px; flex:0 0 auto;}
+  .menu-row{display:flex; align-items:center; gap:14px; padding:15px 20px; border-bottom:1px solid var(--border); cursor:pointer;}
+  .menu-row svg{width:19px; height:19px; color:var(--primary); flex:0 0 auto;}
+  .menu-row span{flex:1; font-size:14px; font-weight:600;}
+  .menu-row .chev{width:15px; height:15px; color:var(--text-muted);}
+
+  /* ---- Toast ---- */
+  .toast{position:absolute; bottom:96px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--text); color:#fff; padding:12px 22px; border-radius:12px; font-size:13px; font-weight:600; z-index:100; opacity:0; transition:all .25s; pointer-events:none; white-space:nowrap;}
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+  /* ---- misc ---- */
+  .order-card{background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:14px; margin:0 20px 14px;}
+  .order-card .top{display:flex; justify-content:space-between; margin-bottom:8px;}
+  .status-pill{font-size:10.5px; font-weight:700; padding:4px 10px; border-radius:8px; background:#E6F8EF; color:var(--success);}
+  .starbar{display:flex; gap:2px;}
+  .starbar svg{width:13px; height:13px; fill:var(--accent2);}
+  .divider{height:8px; background:var(--bg);}
+  .center-logo{display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; gap:10px;}
+  .center-logo .logo-mark{width:74px; height:74px; border-radius:22px; background:linear-gradient(135deg,var(--primary),#7B5CFF); display:flex; align-items:center; justify-content:center; font-family:'Space Grotesk'; font-weight:700; color:#fff; font-size:34px;}
+  .hint{font-size:11.5px; color:var(--text-muted); text-align:center; margin-top:14px; line-height:1.5;}
+  a.linklike{color:var(--primary); font-weight:700; cursor:pointer;}
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="notch"></div>
+  <div class="statusbar"><span id="clock">9:41</span><span>●●● Hobby</span><span>🔋100%</span></div>
+  <div id="screen" class="screen"></div>
+  <div id="bottomnav" class="bottomnav"></div>
+  <div id="toast" class="toast"></div>
+</div>
+
+<!-- ============ FIREBASE ============ -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+/* ====== PASTE YOUR FIREBASE CONFIG HERE (Project settings → General → Your apps → SDK setup) ====== */
+const firebaseConfig = {
+  apiKey: "AIzaSyD5HzLnG_2Tfsf5C1gFRxaImLukFrQcoDI",
+  authDomain: "hobby-c3731.firebaseapp.com",
+  projectId: "hobby-c3731",
+  storageBucket: "hobby-c3731.firebasestorage.app",
+  messagingSenderId: "280198690371",
+  appId: "1:280198690371:web:1506d11eb93000cc7c46f6"
+};
+let firebaseReady = false;
+let auth, db;
+try{
+  firebase.initializeApp(firebaseConfig);
+  auth = firebase.auth();
+  db = firebase.firestore();
+  firebaseReady = firebaseConfig.apiKey !== "YOUR_API_KEY";
+}catch(e){ console.warn('Firebase not configured yet:', e); }
+</script>
+
+<script>
+/* ============================ DATA ============================ */
+const CATEGORIES = [
+  {id:'fashion', name:'Fashion', icon:'👗'},
+  {id:'electronics', name:'Electronics', icon:'🎧'},
+  {id:'home', name:'Home', icon:'🪴'},
+  {id:'beauty', name:'Beauty', icon:'💄'},
+  {id:'sports', name:'Sports', icon:'🏸'},
+  {id:'crafts', name:'Crafts', icon:'🧶'},
+];
+
+const COLORS = ['#4F3DF5','#FF5C7A','#21B573','#FFB648','#17162B','#3AB5E8'];
+
+function img(seed,w=500,h=500){ return `https://picsum.photos/seed/${seed}/${w}/${h}`; }
+
+let PRODUCTS = [
+  {id:1,name:'Cloudknit Oversized Hoodie',cat:'fashion',price:1799,mrp:2499,tag:'SALE',rating:4.6,reviews:128,seed:'hoodie1',desc:'A relaxed-fit hoodie in brushed cotton fleece, built for slow mornings and long walks. Garment-dyed for a soft, lived-in feel.',sizes:['S','M','L','XL'],colors:[0,4,5]},
+  {id:2,name:'Everyday Wide-Leg Trousers',cat:'fashion',price:1499,mrp:1499,tag:'',rating:4.4,reviews:76,seed:'trouser1',desc:'Tailored wide-leg trousers with a high rise and a soft drape, cut from a mid-weight twill that moves with you all day.',sizes:['28','30','32','34'],colors:[4,0]},
+  {id:3,name:'Studio Linen Shirt',cat:'fashion',price:1299,mrp:1799,tag:'NEW',rating:4.7,reviews:41,seed:'shirt1',desc:'A breathable linen-blend shirt with a relaxed collar, made for warm days and easy layering.',sizes:['S','M','L'],colors:[1,3,4]},
+  {id:4,name:'Trail Runner Sneakers',cat:'fashion',price:2999,mrp:3999,tag:'SALE',rating:4.5,reviews:203,seed:'shoe1',desc:'Lightweight trail runners with responsive cushioning and a grippy outsole for pavement or path.',sizes:['7','8','9','10'],colors:[0,4]},
+  {id:5,name:'WaveSound Pro Earbuds',cat:'electronics',price:3499,mrp:4999,tag:'SALE',rating:4.3,reviews:512,seed:'earbud1',desc:'Active noise-cancelling earbuds with 30-hour battery life via the charging case, and a snug, secure fit.',sizes:['Standard'],colors:[4,0]},
+  {id:6,name:'PulseBand Fitness Tracker',cat:'electronics',price:2199,mrp:2199,tag:'NEW',rating:4.2,reviews:88,seed:'watch1',desc:'Track steps, heart rate, and sleep with a week-long battery and a bright always-on display.',sizes:['Standard'],colors:[4,1,5]},
+  {id:7,name:'AirDesk Portable Fan',cat:'electronics',price:899,mrp:1199,tag:'',rating:4.0,reviews:34,seed:'fan1',desc:'A quiet, rechargeable desk fan with three speeds — small enough to fit in a bag.',sizes:['Standard'],colors:[4,3]},
+  {id:8,name:'GlowStrip Ambient Light',cat:'electronics',price:1299,mrp:1599,tag:'',rating:4.4,reviews:65,seed:'light1',desc:'App-controlled LED light strip with 16 million colours, perfect for a desk setup or reading nook.',sizes:['2m','5m'],colors:[0,1,2]},
+  {id:9,name:'Terracotta Planter Set',cat:'home',price:799,mrp:999,tag:'NEW',rating:4.8,reviews:57,seed:'plant1',desc:'A set of three hand-finished terracotta planters with drainage holes, in graduated sizes.',sizes:['Set of 3'],colors:[4]},
+  {id:10,name:'Linen Weave Throw Blanket',cat:'home',price:1599,mrp:1999,tag:'SALE',rating:4.6,reviews:112,seed:'blanket1',desc:'A soft, breathable throw in a textured linen weave — light enough for every season.',sizes:['130x170cm'],colors:[3,4,1]},
+  {id:11,name:'Amber Glow Candle Trio',cat:'home',price:699,mrp:699,tag:'',rating:4.5,reviews:29,seed:'candle1',desc:'Three soy-wax candles in warm, woody scents, hand-poured in reusable glass jars.',sizes:['Set of 3'],colors:[4]},
+  {id:12,name:'Oakframe Wall Mirror',cat:'home',price:2299,mrp:2799,tag:'',rating:4.7,reviews:44,seed:'mirror1',desc:'A round wall mirror in a solid oak frame, finished by hand for a warm, natural grain.',sizes:['60cm'],colors:[4]},
+  {id:13,name:'Matte Skin Tint SPF 30',cat:'beauty',price:649,mrp:799,tag:'NEW',rating:4.3,reviews:91,seed:'beauty1',desc:'A lightweight, buildable tint with SPF 30 that evens tone while letting skin breathe.',sizes:['30ml'],colors:[4]},
+  {id:14,name:'Rosewater Hydrating Mist',cat:'beauty',price:399,mrp:499,tag:'',rating:4.6,reviews:150,seed:'beauty2',desc:'A fine, cooling mist of rosewater and aloe to refresh skin any time of day.',sizes:['100ml'],colors:[4]},
+  {id:15,name:'Bamboo Bristle Brush Set',cat:'beauty',price:549,mrp:549,tag:'',rating:4.4,reviews:37,seed:'beauty3',desc:'Five bamboo-handled brushes for a full face routine, with a reusable travel pouch.',sizes:['Set of 5'],colors:[4]},
+  {id:16,name:'Everyday SPF Face Cream',cat:'beauty',price:549,mrp:699,tag:'SALE',rating:4.5,reviews:68,seed:'beauty4',desc:'A daily moisturiser with broad-spectrum SPF 25 that layers well under makeup.',sizes:['50ml'],colors:[4]},
+  {id:17,name:'Rally Pro Badminton Racket',cat:'sports',price:1899,mrp:2399,tag:'SALE',rating:4.5,reviews:73,seed:'sport1',desc:'A carbon-composite racket balanced for fast net play, strung and ready to go.',sizes:['Standard'],colors:[0,4]},
+  {id:18,name:'GripFit Yoga Mat',cat:'sports',price:999,mrp:1299,tag:'',rating:4.7,reviews:184,seed:'sport2',desc:'A 6mm non-slip mat with a textured surface that grips through the sweatiest sessions.',sizes:['183x61cm'],colors:[0,1,2,4]},
+  {id:19,name:'Steel Shaker Bottle',cat:'sports',price:449,mrp:449,tag:'NEW',rating:4.2,reviews:22,seed:'sport3',desc:'A leakproof, insulated shaker that keeps drinks cold for up to 12 hours.',sizes:['700ml'],colors:[4,0,5]},
+  {id:20,name:'Trailblaze Running Cap',cat:'sports',price:399,mrp:499,tag:'',rating:4.1,reviews:19,seed:'sport4',desc:'A lightweight, quick-dry cap with a reflective strip for early runs.',sizes:['One size'],colors:[4,0,1]},
+  {id:21,name:'Beginner Watercolor Kit',cat:'crafts',price:899,mrp:1099,tag:'NEW',rating:4.8,reviews:96,seed:'craft1',desc:'24 half-pan watercolours, a travel brush, and a bound cotton-paper pad — everything to start.',sizes:['24-pan set'],colors:[4]},
+  {id:22,name:'Merino Wool Yarn Bundle',cat:'crafts',price:1199,mrp:1199,tag:'',rating:4.6,reviews:53,seed:'craft2',desc:'Five skeins of soft merino in warm, muted tones, perfect for a first sweater project.',sizes:['5x100g'],colors:[4,1,3]},
+  {id:23,name:'Macrame Cord & Ring Kit',cat:'crafts',price:649,mrp:799,tag:'SALE',rating:4.4,reviews:31,seed:'craft3',desc:'100m of cotton cord with wooden rings and a dowel — enough for two wall hangings.',sizes:['Kit'],colors:[4]},
+  {id:24,name:'Pressed Flower Resin Set',cat:'crafts',price:1099,mrp:1399,tag:'',rating:4.7,reviews:48,seed:'craft4',desc:'Everything to cast pendants and coasters: resin, moulds, dried flowers, and a stir kit.',sizes:['Kit'],colors:[4]},
+];
+
+const BANNERS = [
+  {tag:'New Season', title:'Made for whatever you\'re into', cta:'Explore now'},
+];
+
+/* ============================ STATE ============================ */
+let state = {
+  screen:'home',
+  history:[],
+  cart:[],        // {productId, qty, size, color}
+  wishlist:[],    // productId
+  user:null,      // {name, email}
+  orders:[],
+  currentProductId:null,
+  pdSelected:{size:null, color:null, qty:1},
+  searchQuery:'',
+  categoryFilter:null,
+  authMode:'login',
+};
+
+function go(screen, push=true){
+  if(push) state.history.push(state.screen);
+  state.screen = screen;
+  render();
+  document.getElementById('screen').scrollTop = 0;
+}
+function back(){
+  const prev = state.history.pop();
+  state.screen = prev || 'home';
+  render();
+}
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(()=>t.classList.remove('show'), 1800);
+}
+
+/* ============================ HELPERS ============================ */
+function getProduct(id){ return PRODUCTS.find(p=>p.id===id); }
+function money(n){ return '₹' + n.toLocaleString('en-IN'); }
+function cartCount(){ return state.cart.reduce((s,i)=>s+i.qty,0); }
+function isWished(id){ return state.wishlist.includes(id); }
+function toggleWish(id, ev){
+  if(ev) ev.stopPropagation();
+  const idx = state.wishlist.indexOf(id);
+  if(idx>-1){ state.wishlist.splice(idx,1); toast('Removed from wishlist'); }
+  else { state.wishlist.push(id); toast('Added to wishlist'); }
+  syncUserData();
+  render();
+}
+function addToCart(product, size, color, qty){
+  const existing = state.cart.find(i=>i.productId===product.id && i.size===size && i.color===color);
+  if(existing){ existing.qty += qty; }
+  else{ state.cart.push({productId:product.id, qty, size, color}); }
+  toast('Added to cart');
+  syncUserData();
+  render();
+}
+
+/* ---- Firestore persistence for logged-in users (cart / wishlist / orders) ---- */
+function syncUserData(){
+  if(!firebaseReady || !state.user || !state.user.uid) return; // guests aren't persisted
+  db.collection('users').doc(state.user.uid).set({
+    name: state.user.name,
+    email: state.user.email,
+    cart: state.cart,
+    wishlist: state.wishlist,
+    orders: state.orders,
+  }, {merge:true}).catch(err=>console.warn('Sync failed:', err));
+}
+function cartSubtotal(){
+  return state.cart.reduce((sum,item)=>{
+    const p = getProduct(item.productId);
+    return sum + p.price * item.qty;
+  },0);
+}
+function starSvg(){
+  return `<svg viewBox="0 0 20 20"><path d="M10 1l2.6 6.2 6.7.5-5.1 4.4 1.6 6.5L10 15l-5.8 3.6 1.6-6.5L.7 7.7l6.7-.5L10 1z"/></svg>`;
+}
+function icon(name){
+  const icons = {
+    home:'<path d="M3 11l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/>',
+    grid:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
+    heart:'<path d="M12 21s-7.5-4.6-10-9.2C.4 8 2 4 6 4c2.2 0 3.7 1.3 4.7 2.6C11.7 5.3 13.2 4 15.4 4c4 0 5.6 4 4 7.8-2.5 4.6-10 9.2-10 9.2z"/>',
+    bag:'<path d="M6 8h12l1 12H5L6 8z"/><path d="M9 8V6a3 3 0 016 0v2"/>',
+    user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/>',
+    back:'<path d="M15 18l-6-6 6-6"/>',
+    search:'<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>',
+    heartsm:'<path d="M12 21s-7.5-4.6-10-9.2C.4 8 2 4 6 4c2.2 0 3.7 1.3 4.7 2.6C11.7 5.3 13.2 4 15.4 4c4 0 5.6 4 4 7.8-2.5 4.6-10 9.2-10 9.2z"/>',
+    chev:'<path d="M9 18l6-6-6-6"/>',
+    box:'<path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/>',
+    address:'<path d="M12 21s-7-6.2-7-11a7 7 0 0114 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',
+    settings:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.9l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.9-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1-1.6 1.7 1.7 0 00-1.9.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.9 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1 1.7 1.7 0 00-.3-1.9l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.9.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.9-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.9V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/>',
+    logout:'<path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/>',
+    plus:'<path d="M12 5v14M5 12h14"/>',
+    minus:'<path d="M5 12h14"/>',
+    trash:'<path d="M3 6h18"/><path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>',
+  };
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${icons[name]||''}</svg>`;
+}
+
+/* ============================ RENDER: NAV ============================ */
+function renderBottomNav(){
+  const tabs = [
+    {id:'home', label:'Home', icon:'home'},
+    {id:'categories', label:'Categories', icon:'grid'},
+    {id:'wishlist', label:'Wishlist', icon:'heart'},
+    {id:'cart', label:'Cart', icon:'bag'},
+    {id:'profile', label:'Profile', icon:'user'},
+  ];
+  const hideOn = ['productDetail','checkout','orderSuccess','login','signup'];
+  if(hideOn.includes(state.screen)){ document.getElementById('bottomnav').innerHTML=''; return; }
+  document.getElementById('bottomnav').innerHTML = tabs.map(t=>{
+    const active = state.screen===t.id;
+    const badge = t.id==='cart' && cartCount()>0 ? `<span class="badge">${cartCount()}</span>` : '';
+    const badge2 = t.id==='wishlist' && state.wishlist.length>0 ? `<span class="badge">${state.wishlist.length}</span>` : '';
+    return `<div class="navitem ${active?'active':''}" onclick="go('${t.id}', false)">
+      ${icon(t.icon)}${badge}${badge2}
+      <span>${t.label}</span>
+    </div>`;
+  }).join('');
+}
+
+/* ============================ RENDER: SCREENS ============================ */
+function productCard(p){
+  return `<div class="card" onclick="openProduct(${p.id})">
+    <div class="imgwrap">
+      <img src="${img(p.seed)}" alt="${p.name}">
+      ${p.tag ? `<div class="sticker ${p.tag==='NEW'?'new':''}">${p.tag}</div>` : ''}
+      <div class="wishbtn" onclick="toggleWish(${p.id}, event)">
+        <svg viewBox="0 0 24 24" fill="${isWished(p.id)?'#FF5C7A':'none'}" stroke="${isWished(p.id)?'#FF5C7A':'#6E6C85'}" stroke-width="2"><path d="M12 21s-7.5-4.6-10-9.2C.4 8 2 4 6 4c2.2 0 3.7 1.3 4.7 2.6C11.7 5.3 13.2 4 15.4 4c4 0 5.6 4 4 7.8-2.5 4.6-10 9.2-10 9.2z"/></svg>
+      </div>
+    </div>
+    <div class="info">
+      <div class="cat">${CATEGORIES.find(c=>c.id===p.cat)?.name||''}</div>
+      <div class="name">${p.name}</div>
+      <div class="price-row"><span class="price">${money(p.price)}</span>${p.mrp>p.price?`<span class="mrp">${money(p.mrp)}</span>`:''}</div>
+      <div class="rating">${starSvg()} ${p.rating} (${p.reviews})</div>
+    </div>
+  </div>`;
+}
+
+function screenHome(){
+  const trending = PRODUCTS.filter(p=>p.tag==='SALE').slice(0,4);
+  const fresh = PRODUCTS.filter(p=>p.tag==='NEW').slice(0,4);
+  return `
+    <div class="topbar">
+      <div class="grow"><h1>Hey${state.user? ' '+state.user.name.split(' ')[0]:''} 👋</h1></div>
+      <div class="iconbtn" onclick="go('search')">${icon('search')}</div>
+      <div class="iconbtn" onclick="go('cart')" style="position:relative">${icon('bag')}${cartCount()>0?`<span style="position:absolute;top:-4px;right:-4px;background:var(--accent);color:#fff;font-size:9px;font-weight:700;min-width:15px;height:15px;border-radius:8px;display:flex;align-items:center;justify-content:center;">${cartCount()}</span>`:''}</div>
+    </div>
+    <div class="banner-wrap">
+      <div class="banner">
+        <div class="blob"></div><div class="blob2"></div>
+        <div class="tag" style="z-index:2">${BANNERS[0].tag}</div>
+        <h2 style="z-index:2">${BANNERS[0].title}</h2>
+        <div class="cta" onclick="go('categories')">${BANNERS[0].cta}</div>
+      </div>
+    </div>
+    <div class="section" style="padding-top:6px">
+      <div class="section-head"><h3>Shop by category</h3></div>
+    </div>
+    <div class="cat-row">
+      ${CATEGORIES.map(c=>`<div class="cat-chip" onclick="openCategory('${c.id}')"><div class="ring">${c.icon}</div><span>${c.name}</span></div>`).join('')}
+    </div>
+    <div class="section">
+      <div class="section-head"><h3>🔥 On sale</h3><span class="link" onclick="go('categories')">See all</span></div>
+    </div>
+    <div class="grid">${trending.map(productCard).join('')}</div>
+    <div class="section">
+      <div class="section-head"><h3>✨ New arrivals</h3><span class="link" onclick="go('categories')">See all</span></div>
+    </div>
+    <div class="grid">${fresh.map(productCard).join('')}</div>
+    <div style="height:14px"></div>
+  `;
+}
+
+function screenCategories(){
+  const filter = state.categoryFilter;
+  const list = filter ? PRODUCTS.filter(p=>p.cat===filter) : PRODUCTS;
+  const catName = filter ? CATEGORIES.find(c=>c.id===filter)?.name : 'All products';
+  return `
+    <div class="topbar">
+      ${filter? `<div class="iconbtn" onclick="state.categoryFilter=null; render()">${icon('back')}</div>`:''}
+      <h1 class="grow">${catName}</h1>
+      <div class="iconbtn" onclick="go('search')">${icon('search')}</div>
+    </div>
+    <div class="cat-row">
+      <div class="cat-chip" onclick="state.categoryFilter=null; render()">
+        <div class="ring" style="${!filter?'border-color:var(--primary)':''}">🛍️</div><span>All</span>
+      </div>
+      ${CATEGORIES.map(c=>`<div class="cat-chip" onclick="state.categoryFilter='${c.id}'; render()">
+        <div class="ring" style="${filter===c.id?'border-color:var(--primary)':''}">${c.icon}</div><span>${c.name}</span></div>`).join('')}
+    </div>
+    <div class="grid" style="padding-top:10px">${list.map(productCard).join('')}</div>
+  `;
+}
+
+function openCategory(id){
+  state.categoryFilter = id;
+  go('categories');
+}
+
+function screenSearch(){
+  const q = state.searchQuery.trim().toLowerCase();
+  const results = q ? PRODUCTS.filter(p=>p.name.toLowerCase().includes(q) || p.cat.includes(q)) : [];
+  return `
+    <div class="topbar">
+      <div class="iconbtn" onclick="back()">${icon('back')}</div>
+      <h1 class="grow">Search</h1>
+    </div>
+    <div class="searchbar">
+      ${icon('search')}
+      <input autofocus placeholder="Search for products..." value="${state.searchQuery}" oninput="state.searchQuery=this.value; renderSearchResults();">
+    </div>
+    <div id="searchResults">
+      ${q ? (results.length ? `<div class="grid">${results.map(productCard).join('')}</div>` : emptyState('🔍','No results found','Try a different search term.')) :
+      `<div class="section"><div class="section-head"><h3>Popular searches</h3></div></div>
+      <div style="padding:0 20px; display:flex; flex-wrap:wrap; gap:10px;">
+        ${['Hoodie','Earbuds','Yoga Mat','Planter','Watercolor','Sneakers'].map(t=>`<div class="opt" onclick="state.searchQuery='${t}'; renderSearchResults(); document.querySelector('.searchbar input').value='${t}';">${t}</div>`).join('')}
+      </div>`}
+    </div>
+  `;
+}
+function renderSearchResults(){
+  const container = document.getElementById('searchResults');
+  const q = state.searchQuery.trim().toLowerCase();
+  const results = q ? PRODUCTS.filter(p=>p.name.toLowerCase().includes(q) || p.cat.includes(q)) : [];
+  if(!container) return;
+  container.innerHTML = q ? (results.length ? `<div class="grid">${results.map(productCard).join('')}</div>` : emptyState('🔍','No results found','Try a different search term.')) :
+      `<div class="section"><div class="section-head"><h3>Popular searches</h3></div></div>
+      <div style="padding:0 20px; display:flex; flex-wrap:wrap; gap:10px;">
+        ${['Hoodie','Earbuds','Yoga Mat','Planter','Watercolor','Sneakers'].map(t=>`<div class="opt" onclick="state.searchQuery='${t}'; renderSearchResults();">${t}</div>`).join('')}
+      </div>`;
+}
+
+function openProduct(id){
+  state.currentProductId = id;
+  const p = getProduct(id);
+  state.pdSelected = {size:p.sizes[0], color:p.colors[0], qty:1};
+  go('productDetail');
+}
+
+function screenProductDetail(){
+  const p = getProduct(state.currentProductId);
+  if(!p) return emptyState('❓','Product not found','');
+  const off = p.mrp>p.price ? Math.round((1-p.price/p.mrp)*100) : 0;
+  const sel = state.pdSelected;
+  return `
+    <div class="topbar" style="position:absolute; z-index:20; width:100%;">
+      <div class="iconbtn" onclick="back()">${icon('back')}</div>
+      <div class="grow"></div>
+      <div class="iconbtn" onclick="toggleWish(${p.id})">
+        <svg viewBox="0 0 24 24" fill="${isWished(p.id)?'#FF5C7A':'none'}" stroke="${isWished(p.id)?'#FF5C7A':'#17162B'}" stroke-width="2"><path d="M12 21s-7.5-4.6-10-9.2C.4 8 2 4 6 4c2.2 0 3.7 1.3 4.7 2.6C11.7 5.3 13.2 4 15.4 4c4 0 5.6 4 4 7.8-2.5 4.6-10 9.2-10 9.2z"/></svg>
+      </div>
+    </div>
+    <div class="pd-imgwrap"><img src="${img(p.seed,600,600)}" alt="${p.name}"></div>
+    <div class="pd-body">
+      <div class="pd-cat">${CATEGORIES.find(c=>c.id===p.cat)?.name}</div>
+      <div class="pd-title">${p.name}</div>
+      <div class="rating" style="margin-bottom:10px">${starSvg()} ${p.rating} · ${p.reviews} reviews</div>
+      <div class="pd-price-row">
+        <span class="pd-price">${money(p.price)}</span>
+        ${p.mrp>p.price?`<span class="mrp">${money(p.mrp)}</span><span class="pd-off">${off}% OFF</span>`:''}
+      </div>
+
+      ${p.sizes[0]!=='Standard' && p.sizes[0]!=='Kit' && p.sizes[0]!=='Set of 3' && p.sizes[0]!=='Set of 5' ? `
+      <div class="optlabel">Size</div>
+      <div class="opt-row">${p.sizes.map(s=>`<div class="opt ${sel.size===s?'sel':''}" onclick="state.pdSelected.size='${s}'; render()">${s}</div>`).join('')}</div>
+      ` : ''}
+
+      <div class="optlabel">Color</div>
+      <div class="opt-row">${p.colors.map(ci=>`<div class="swatch ${sel.color===ci?'sel':''}" style="background:${COLORS[ci]}" onclick="state.pdSelected.color=${ci}; render()"></div>`).join('')}</div>
+
+      <div class="optlabel">Quantity</div>
+      <div class="qty-row">
+        <div class="qty-ctrl">
+          <button onclick="changeQty(-1)">−</button>
+          <span class="qn">${sel.qty}</span>
+          <button onclick="changeQty(1)">+</button>
+        </div>
+      </div>
+
+      <div class="optlabel">Description</div>
+      <div class="desc">${p.desc}</div>
+    </div>
+    <div class="pd-fixedbar">
+      <button class="btn btn-outline" onclick="toggleWish(${p.id}); toast('${isWished(p.id)?'Removed from':'Added to'} wishlist')" style="flex:0 0 54px; padding:13px 0;">
+        <svg style="width:18px;height:18px;margin:0 auto;display:block;" viewBox="0 0 24 24" fill="${isWished(p.id)?'#FF5C7A':'none'}" stroke="${isWished(p.id)?'#FF5C7A':'#4F3DF5'}" stroke-width="2"><path d="M12 21s-7.5-4.6-10-9.2C.4 8 2 4 6 4c2.2 0 3.7 1.3 4.7 2.6C11.7 5.3 13.2 4 15.4 4c4 0 5.6 4 4 7.8-2.5 4.6-10 9.2-10 9.2z"/></svg>
+      </button>
+      <button class="btn btn-primary" onclick="addToCart(getProduct(${p.id}), state.pdSelected.size, state.pdSelected.color, state.pdSelected.qty)">Add to cart · ${money(p.price*sel.qty)}</button>
+    </div>
+  `;
+}
+function changeQty(delta){
+  state.pdSelected.qty = Math.max(1, Math.min(10, state.pdSelected.qty+delta));
+  render();
+}
+
+function screenWishlist(){
+  const items = state.wishlist.map(getProduct).filter(Boolean);
+  return `
+    <div class="topbar"><h1 class="grow">Wishlist</h1></div>
+    ${items.length ? `<div class="grid">${items.map(productCard).join('')}</div>` :
+    emptyState('🤍','Your wishlist is empty','Tap the heart on any product to save it here for later.')}
+  `;
+}
+
+function screenCart(){
+  const items = state.cart;
+  if(!items.length){
+    return `<div class="topbar"><h1 class="grow">Cart</h1></div>${emptyState('🛒','Your cart is empty','Looks like you haven\'t added anything yet. Let\'s fix that.')}`;
+  }
+  const subtotal = cartSubtotal();
+  const shipping = subtotal > 1999 ? 0 : 79;
+  const total = subtotal + shipping;
+  return `
+    <div class="topbar"><h1 class="grow">Cart (${cartCount()})</h1></div>
+    <div style="padding-bottom:170px">
+    ${items.map((item,idx)=>{
+      const p = getProduct(item.productId);
+      return `<div class="cart-item">
+        <img src="${img(p.seed,200,200)}">
+        <div class="ci-info">
+          <div class="name">${p.name}</div>
+          <div class="meta">${item.size?item.size+' · ':''}<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${COLORS[item.color]};vertical-align:middle;"></span></div>
+          <div class="ci-bottom">
+            <div class="qty-ctrl" style="transform:scale(.85); transform-origin:left;">
+              <button onclick="changeCartQty(${idx},-1)">−</button>
+              <span class="qn">${item.qty}</span>
+              <button onclick="changeCartQty(${idx},1)">+</button>
+            </div>
+            <span class="ci-price">${money(p.price*item.qty)}</span>
+          </div>
+        </div>
+      </div>`;
+    }).join('')}
+    <div class="summary">
+      <div class="srow"><span>Subtotal</span><span>${money(subtotal)}</span></div>
+      <div class="srow"><span>Shipping</span><span>${shipping===0?'Free':money(shipping)}</span></div>
+      <div class="srow total"><span>Total</span><span>${money(total)}</span></div>
+    </div>
+    ${shipping>0 ? `<div class="hint">Add ${money(1999-subtotal)} more for free shipping 🚚</div>` : ''}
+    </div>
+    <div class="checkout-bar">
+      <button class="btn btn-primary" onclick="go('checkout')">Checkout · ${money(total)}</button>
+    </div>
+  `;
+}
+function changeCartQty(idx, delta){
+  state.cart[idx].qty += delta;
+  if(state.cart[idx].qty<=0) state.cart.splice(idx,1);
+  syncUserData();
+  render();
+}
+
+function screenCheckout(){
+  const subtotal = cartSubtotal();
+  const shipping = subtotal > 1999 ? 0 : 79;
+  const total = subtotal + shipping;
+  return `
+    <div class="topbar">
+      <div class="iconbtn" onclick="back()">${icon('back')}</div>
+      <h1 class="grow">Checkout</h1>
+    </div>
+    <div class="section" style="padding-top:4px">
+      <div class="section-head"><h3>Delivery address</h3></div>
+      <div class="field"><label>Full name</label><input id="ck-name" placeholder="Full name" value="${state.user?state.user.name:''}"></div>
+      <div class="field"><label>Phone number</label><input id="ck-phone" placeholder="10-digit phone number" type="tel"></div>
+      <div class="field"><label>Address</label><textarea id="ck-address" rows="2" placeholder="House no., street, area"></textarea></div>
+      <div class="field-row">
+        <div class="field"><label>City</label><input id="ck-city" placeholder="City"></div>
+        <div class="field"><label>Pincode</label><input id="ck-pincode" placeholder="Pincode"></div>
+      </div>
+    </div>
+    <div class="section" style="padding-top:0">
+      <div class="section-head"><h3>Payment method</h3></div>
+      <div class="opt-row" style="flex-direction:column; gap:10px;">
+        <label class="opt ${state.payMethod!=='card'?'sel':''}" style="display:flex; align-items:center; gap:10px; width:100%; cursor:pointer;">
+          <input type="radio" name="pay" checked onchange="state.payMethod='cod'"> Cash on delivery
+        </label>
+        <label class="opt" style="display:flex; align-items:center; gap:10px; width:100%; cursor:pointer;">
+          <input type="radio" name="pay" onchange="state.payMethod='card'"> Card / UPI (demo)
+        </label>
+      </div>
+    </div>
+    <div class="summary">
+      <div class="srow"><span>Subtotal</span><span>${money(subtotal)}</span></div>
+      <div class="srow"><span>Shipping</span><span>${shipping===0?'Free':money(shipping)}</span></div>
+      <div class="srow total"><span>Total</span><span>${money(total)}</span></div>
+    </div>
+    <div style="height:110px"></div>
+    <div class="checkout-bar">
+      <button class="btn btn-primary" onclick="placeOrder()">Place order · ${money(total)}</button>
+    </div>
+  `;
+}
+function placeOrder(){
+  const name = document.getElementById('ck-name').value.trim();
+  const phone = document.getElementById('ck-phone').value.trim();
+  const address = document.getElementById('ck-address').value.trim();
+  if(!name || !phone || !address){ toast('Please fill in your delivery details'); return; }
+  const order = {
+    id: 'HB' + Math.floor(10000+Math.random()*89999),
+    items: JSON.parse(JSON.stringify(state.cart)),
+    total: cartSubtotal() + (cartSubtotal()>1999?0:79),
+    date: new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}),
+    status:'Processing',
+  };
+  state.orders.unshift(order);
+  state.cart = [];
+  syncUserData();
+  go('orderSuccess');
+}
+
+function screenOrderSuccess(){
+  const order = state.orders[0];
+  return `
+    <div class="center-logo" style="padding:40px 30px;">
+      <div style="width:84px;height:84px;border-radius:50%;background:#E6F8EF;display:flex;align-items:center;justify-content:center;font-size:40px;">✅</div>
+      <h2 style="margin-top:10px;">Order placed!</h2>
+      <p style="color:var(--text-muted); font-size:13.5px; text-align:center; line-height:1.6;">Your order <b>#${order?order.id:''}</b> has been placed successfully. You'll receive it in 3–5 business days.</p>
+      <div style="width:100%; margin-top:20px; display:flex; flex-direction:column; gap:10px;">
+        <button class="btn btn-primary" onclick="state.history=[]; go('orders', false)">Track order</button>
+        <button class="btn btn-outline" onclick="state.history=[]; go('home', false)">Continue shopping</button>
+      </div>
+    </div>
+  `;
+}
+
+function screenOrders(){
+  return `
+    <div class="topbar">
+      <div class="iconbtn" onclick="go('profile')">${icon('back')}</div>
+      <h1 class="grow">My orders</h1>
+    </div>
+    ${state.orders.length ? state.orders.map(o=>`
+      <div class="order-card">
+        <div class="top">
+          <div><b style="font-size:13.5px;">#${o.id}</b><div style="font-size:11.5px;color:var(--text-muted);margin-top:2px;">${o.date} · ${o.items.length} item(s)</div></div>
+          <span class="status-pill">${o.status}</span>
+        </div>
+        <div style="display:flex; gap:-8px; margin:8px 0;">
+          ${o.items.slice(0,4).map(it=>`<img src="${img(getProduct(it.productId).seed,80,80)}" style="width:38px;height:38px;border-radius:8px;object-fit:cover;margin-right:-8px;border:2px solid var(--surface);">`).join('')}
+        </div>
+        <div style="font-weight:800; font-size:14px;">${money(o.total)}</div>
+      </div>
+    `).join('') : emptyState('📦','No orders yet','Your placed orders will show up here.')}
+  `;
+}
+
+function emptyState(emoji,title,text){
+  return `<div class="empty"><div class="emoji">${emoji}</div><h3>${title}</h3><p>${text}</p>
+    <button class="btn btn-primary" style="width:auto; padding:13px 26px;" onclick="state.history=[]; go('home',false)">Start shopping</button>
+  </div>`;
+}
+
+/* ---- Profile / Auth (no OTP — simple email+password or guest) ---- */
+function screenProfile(){
+  if(!state.user){
+    return `
+      <div class="topbar"><h1 class="grow">Profile</h1></div>
+      <div class="center-logo" style="height:auto; padding:50px 30px 20px;">
+        <div class="logo-mark">H</div>
+        <h2 style="margin-top:14px;">Welcome to Hobby</h2>
+        <p style="color:var(--text-muted); font-size:13px; text-align:center; margin-top:4px;">Sign in to track orders and save your details.</p>
+        <div style="width:100%; margin-top:22px; display:flex; flex-direction:column; gap:10px;">
+          <button class="btn btn-primary" onclick="state.authMode='login'; go('login')">Log in</button>
+          <button class="btn btn-outline" onclick="state.authMode='signup'; go('signup')">Create account</button>
+          <button class="btn btn-ghost" onclick="continueAsGuest()">Continue as guest</button>
+        </div>
+      </div>
+    `;
+  }
+  return `
+    <div class="topbar"><h1 class="grow">Profile</h1></div>
+    <div class="profile-head">
+      <div class="avatar">${state.user.name.charAt(0).toUpperCase()}</div>
+      <div><div style="font-weight:700; font-size:16px;">${state.user.name}</div><div style="font-size:12.5px; opacity:.85;">${state.user.email}</div></div>
+    </div>
+    <div class="menu-row" onclick="go('orders')">${icon('box')}<span>My orders</span>${icon('chev')}</div>
+    <div class="menu-row" onclick="go('wishlist', false)">${icon('heartsm')}<span>Wishlist</span>${icon('chev')}</div>
+    <div class="menu-row" onclick="toast('Address book — demo only')">${icon('address')}<span>Saved addresses</span>${icon('chev')}</div>
+    <div class="menu-row" onclick="toast('Settings — demo only')">${icon('settings')}<span>Settings</span>${icon('chev')}</div>
+    <div class="menu-row" onclick="logout()" style="border-bottom:none;">${icon('logout')}<span style="color:var(--accent)">Log out</span></div>
+  `;
+}
+function continueAsGuest(){
+  state.user = {name:'Guest', email:'guest@hobby.app'}; // local only, not synced to Firestore
+  state.history=[]; go('home', false);
+  toast('Browsing as guest');
+}
+function logout(){
+  if(firebaseReady && auth.currentUser){ auth.signOut(); }
+  state.user = null;
+  state.cart = []; state.wishlist = []; state.orders = [];
+  state.history=[]; go('home', false);
+}
+
+function screenLogin(){
+  return `
+    <div class="topbar"><div class="iconbtn" onclick="back()">${icon('back')}</div></div>
+    <div style="padding:10px 26px 30px;">
+      <h2 style="font-size:24px;">Log in</h2>
+      <p style="color:var(--text-muted); font-size:13px; margin-top:4px;">No OTP needed — just your email and password.</p>
+      <div style="margin-top:24px;">
+        <div class="field"><label>Email</label><input id="lg-email" type="email" placeholder="you@example.com"></div>
+        <div class="field"><label>Password</label><input id="lg-pass" type="password" placeholder="••••••••"></div>
+      </div>
+      <button class="btn btn-primary" onclick="doLogin()">Log in</button>
+      <p class="hint">Don't have an account? <a class="linklike" onclick="go('signup')">Sign up</a></p>
+    </div>
+  `;
+}
+function screenSignup(){
+  return `
+    <div class="topbar"><div class="iconbtn" onclick="back()">${icon('back')}</div></div>
+    <div style="padding:10px 26px 30px;">
+      <h2 style="font-size:24px;">Create account</h2>
+      <p style="color:var(--text-muted); font-size:13px; margin-top:4px;">Just the basics — no OTP verification required.</p>
+      <div style="margin-top:24px;">
+        <div class="field"><label>Full name</label><input id="su-name" placeholder="Your name"></div>
+        <div class="field"><label>Email</label><input id="su-email" type="email" placeholder="you@example.com"></div>
+        <div class="field"><label>Password</label><input id="su-pass" type="password" placeholder="Create a password"></div>
+      </div>
+      <button class="btn btn-primary" onclick="doSignup()">Create account</button>
+      <p class="hint">Already have an account? <a class="linklike" onclick="go('login')">Log in</a></p>
+    </div>
+  `;
+}
+function doLogin(){
+  const email = document.getElementById('lg-email').value.trim();
+  const pass = document.getElementById('lg-pass').value;
+  if(!email || !pass){ toast('Enter your email and password'); return; }
+  if(!firebaseReady){
+    // Demo fallback if firebaseConfig hasn't been filled in yet
+    state.user = {name: email.split('@')[0].replace(/[._]/g,' '), email};
+    state.history=[]; go('profile', false);
+    toast('Welcome back! (demo mode — Firebase not connected)');
+    return;
+  }
+  auth.signInWithEmailAndPassword(email, pass)
+    .then(()=>{ state.history=[]; go('profile', false); toast('Welcome back!'); })
+    .catch(err=> toast(friendlyAuthError(err)));
+}
+function doSignup(){
+  const name = document.getElementById('su-name').value.trim();
+  const email = document.getElementById('su-email').value.trim();
+  const pass = document.getElementById('su-pass').value;
+  if(!name || !email || !pass){ toast('Please fill in all fields'); return; }
+  if(pass.length < 6){ toast('Password must be at least 6 characters'); return; }
+  if(!firebaseReady){
+    state.user = {name, email};
+    state.history=[]; go('profile', false);
+    toast('Account created! (demo mode — Firebase not connected)');
+    return;
+  }
+  auth.createUserWithEmailAndPassword(email, pass)
+    .then(cred => cred.user.updateProfile({displayName: name}).then(()=>{
+      return db.collection('users').doc(cred.user.uid).set({
+        name, email, cart:[], wishlist:[], orders:[]
+      }, {merge:true});
+    }))
+    .then(()=>{ state.history=[]; go('profile', false); toast('Account created!'); })
+    .catch(err=> toast(friendlyAuthError(err)));
+}
+function friendlyAuthError(err){
+  const map = {
+    'auth/email-already-in-use':'That email is already registered — try logging in.',
+    'auth/invalid-email':'That email address looks invalid.',
+    'auth/weak-password':'Password should be at least 6 characters.',
+    'auth/user-not-found':'No account found with that email.',
+    'auth/wrong-password':'Incorrect password.',
+    'auth/invalid-credential':'Incorrect email or password.',
+  };
+  return map[err.code] || (err.message || 'Something went wrong, please try again.');
+}
+
+/* ---- Keep app state in sync with Firebase Auth session ---- */
+function initFirebaseAuthListener(){
+  if(!firebaseReady) return;
+  auth.onAuthStateChanged(fbUser=>{
+    if(fbUser){
+      db.collection('users').doc(fbUser.uid).get().then(snap=>{
+        const data = snap.exists ? snap.data() : {};
+        state.user = {name: fbUser.displayName || data.name || fbUser.email.split('@')[0], email: fbUser.email, uid: fbUser.uid};
+        state.cart = data.cart || [];
+        state.wishlist = data.wishlist || [];
+        state.orders = data.orders || [];
+        render();
+      });
+    }
+  });
+}
+
+/* ---- Firestore-backed product catalog (falls back to the built-in list above if Firebase isn't connected) ---- */
+function initFirestoreProducts(){
+  if(!firebaseReady) return;
+  const col = db.collection('products');
+  col.get().then(snap=>{
+    if(snap.empty){
+      // First run: seed Firestore with the built-in catalog so it can be edited from the Firebase console
+      const batch = db.batch();
+      PRODUCTS.forEach(p=> batch.set(col.doc(String(p.id)), p));
+      batch.commit().catch(err=>console.warn('Seeding products failed:', err));
+    } else {
+      PRODUCTS = snap.docs.map(d=>d.data());
+      render();
+    }
+  }).catch(err=>console.warn('Loading products failed:', err));
+}
+
+/* ============================ MASTER RENDER ============================ */
+function render(){
+  const screens = {
+    home: screenHome,
+    categories: screenCategories,
+    search: screenSearch,
+    productDetail: screenProductDetail,
+    wishlist: screenWishlist,
+    cart: screenCart,
+    checkout: screenCheckout,
+    orderSuccess: screenOrderSuccess,
+    orders: screenOrders,
+    profile: screenProfile,
+    login: screenLogin,
+    signup: screenSignup,
+  };
+  document.getElementById('screen').innerHTML = (screens[state.screen] || screenHome)();
+  renderBottomNav();
+}
+
+/* clock */
+function updateClock(){
+  const d = new Date();
+  let h = d.getHours()%12; if(h===0) h=12;
+  const m = d.getMinutes().toString().padStart(2,'0');
+  document.getElementById('clock').textContent = `${h}:${m}`;
+}
+updateClock(); setInterval(updateClock, 30000);
+
+render();
+initFirebaseAuthListener();
+initFirestoreProducts();
+</script>
+</body>
+</html>
